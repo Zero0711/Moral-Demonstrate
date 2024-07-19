@@ -52,8 +52,7 @@ function submitComment() {
     }
 
     // Add input to the buffer
-    inputBuffer += commentText.toLowerCase();
-
+    inputBuffer += commentText.toLowerCase().replace(/\s+/g, '');
     if (inputBuffer.length > 100) { // Limit buffer size
         inputBuffer = inputBuffer.slice(-100);
     }
@@ -77,9 +76,9 @@ function submitComment() {
 }
 
 function containsBadWords(text) {
-    const normalizedText = text.replace(/\s+/g, '').toLowerCase(); // Remove spaces
     for (let word of badWords) {
-        if (text.includes(word)) {
+        const regex = new RegExp(word.split('').join('[^a-zA-Z0-9]*'), 'i');
+        if (regex.test(text)) {
             return true;
         }
     }
@@ -92,7 +91,7 @@ function removeComments() {
     const commentIdsToRemove = [];
 
     for (let comment of comments) {
-        const commentText = comment.querySelector('.comment-text').textContent.toLowerCase();
+        const commentText = comment.querySelector('.comment-text').textContent.toLowerCase().replace(/\s+/g, '');
         if (containsBadWords(commentText)) {
             commentIdsToRemove.push(comment.getAttribute('data-id'));
         }
@@ -174,7 +173,7 @@ function saveEditedComment(editInput) {
         return;
     }
 
-    if (containsBadWords(newText.toLowerCase())) {
+    if (containsBadWords(newText.toLowerCase().replace(/\s+/g, ''))) {
         startCooldown();
         commentDiv.remove();
         return;
