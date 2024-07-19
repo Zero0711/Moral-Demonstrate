@@ -51,17 +51,6 @@ function submitComment() {
         commentText = commentText.charAt(0).toUpperCase() + commentText.slice(1);
     }
 
-    if (containsBadWords(commentText.toLowerCase())) {
-        badWordCount++;
-        if (badWordCount >= 3) {
-            banUser();
-        } else {
-            startCooldown();
-        }
-        commentInput.value = '';
-        return;
-    }
-
     // Add input to the buffer
     inputBuffer.push(commentText.toLowerCase());
     if (inputBuffer.length > 10) {
@@ -98,14 +87,9 @@ function containsBadWords(text) {
 
 function checkBufferForBadWords() {
     const bufferString = inputBuffer.join('');
-    for (let i = 1; i <= 10; i++) {
-        if (bufferString.slice(-i).includes(' ')) {
-            continue; // Skip if it contains spaces
-        }
-        for (let word of badWords) {
-            if (word.includes(bufferString.slice(-i))) {
-                return true;
-            }
+    for (let word of badWords) {
+        if (bufferString.includes(word)) {
+            return true;
         }
     }
     return false;
