@@ -20,7 +20,7 @@ const badWords = ["bastard", "bugger", "shit", "fuck", "cibai", "shitface", "bas
 let badWordCount = 0;
 let banned = false;
 let commentIdCounter = 4;
-let inputBuffer = [];
+let inputBuffer = "";
 
 function handleKeyPress(event) {
     if (event.key === "Enter") {
@@ -52,19 +52,20 @@ function submitComment() {
     }
 
     // Add input to the buffer
-    inputBuffer.push(commentText.toLowerCase());
-    if (inputBuffer.length > 10) {
-        inputBuffer.shift(); // Limit buffer size to the last 10 characters
+    inputBuffer += commentText.toLowerCase();
+
+    if (inputBuffer.length > 100) { // Limit buffer size
+        inputBuffer = inputBuffer.slice(-100);
     }
 
-    if (checkBufferForBadWords()) {
+    if (containsBadWords(inputBuffer)) {
         badWordCount++;
         if (badWordCount >= 3) {
             banUser();
         } else {
             startCooldown();
         }
-        inputBuffer = []; // Clear the buffer
+        inputBuffer = ""; // Clear the buffer
         commentInput.value = '';
         removeComments();
         return;
@@ -78,17 +79,7 @@ function submitComment() {
 function containsBadWords(text) {
     const normalizedText = text.replace(/\s+/g, '').toLowerCase(); // Remove spaces
     for (let word of badWords) {
-        if (text.includes(word) || normalizedText.includes(word)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function checkBufferForBadWords() {
-    const bufferString = inputBuffer.join('');
-    for (let word of badWords) {
-        if (bufferString.includes(word)) {
+        if (text.includes(word)) {
             return true;
         }
     }
