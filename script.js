@@ -1,8 +1,9 @@
-const badWords = ["bastard", "bugger", "shit", "fuck", "cibai", "shitface", "bastardson", "punde", "benchod", "motherfucker", "pussy", "fuckface", "fuck", "shit", "bitch", "asshole", "bastard", "dick", "piss", "crap", "damn", "cunt", "prick", "fag", "faggot", "slut", "whore", "nigger", "nigga", "motherfucker", "cock", "pussy", "twat", "wanker", "dyke", "ass", "bullshit", "douche", "dumbass", "jackass", "jerkoff", "shithead", "shitface", "tits", "tit", "balls", "bollocks", "bugger", "chink", "coon", "gook", "heeb", "homo", "kike", "lesbo", "mick", "spic", "tranny", "wetback", "camel jockey", "towelhead", "sandnigger", "jap", "nip", "redskin", "half-breed", "injun", "spade", "zipperhead", "beaner", "gringo", "kraut", "limey", "paki", "raghead", "wop", "yid", "zebra", "abbo", "abo", "bogan", "bint", "hick", "hillbilly", "trailer trash", "gyppo", "chav", "pikey", "redneck", "wigger", "dago", "daggo", "kafir", "kaffir", "boche", "bogtrottor", "bombchucker", "cheesehead", "chingchong", "coonass", "crackhead", "cracker", "darky", "ding", "eskimo", "flip", "froggy", "greaseball", "guido", "gwailo", "harp", "jigaboo", "junglebunny", "kebab", "mud", "mulatto", "niglet", "oreo", "pavement ape", "pickaninny", "poof", "raghead", "sambo", "sheep shagger", "skanger", "spook", "squaw", "tarbaby", "teabag", "trog", "uncle tom", "vato", "wetback", "whitey", "wigga", "yank", "zulu", "analfucker", "arsehole", "bastard", "bitchtits", "cocksucker", "cumdumpster", "cuntface", "dickbag", "dickhead", "dicksneeze", "dickwad", "dickweasel", "dumbfuck", "fuckbag", "fuckboy", "fuckbrain", "fuckface", "fuckhead", "fucknugget", "fuckstick", "fuckwad", "jackoff", "jizzrag", "pissflap", "pisshead", "shitbird", "shitbrick", "shitcunt", "shitdick", "shitgibbon", "shitheel", "shithole", "shitlord", "shitsack", "shitstain", "shitweasel", "twatwaffle"];
+const badWords = ["bastard", "bugger", "shit", "fuck", "cibai", "shitface", "bastardson", "punde", "benchod", "motherfucker", "pussy", "fuckface", "fuck", "shit", "bitch", "asshole", "bastard", "dick", "piss", "crap", "damn", "cunt", "prick", "fag", "faggot", "slut", "whore", "nigger", "nigga", "motherfucker", "cock", "pussy", "twat", "wanker", "dyke", "ass", "bullshit", "douche", "dumbass", "jackass", "jerkoff", "shithead", "shitface", "tits", "tit", "balls", "bollocks", "bugger", "chink", "coon", "gook", "heeb", "homo", "kike", "lesbo", "mick", "spic", "tranny", "wetback", "camel jockey", "towelhead", "sandnigger", "jap", "nip", "redskin", "half-breed", "injun", "spade", "zipperhead", "beaner", "gringo", "kraut", "limey", "paki", "raghead", "wop", "yid", "zebra", "abbo", "abo", "bogan", "bint", "hick", "hillbilly", "trailer trash", "gyppo", "chav", "pikey", "redneck", "wigger", "dago", "daggo", "kafir", "kaffir", "boche", "bogtrottor", "bombchucker", "cheesehead", "chingchong", "coonass", "crackhead", "cracker", "darky", "ding", "eskimo", "flip", "froggy", "greaseball", "guido", "gwailo", "harp", "jigaboo", "junglebunny", "kebab", "mud", "mulatto", "niglet", "oreo", "pavement ape", "pickaninny", "poof", "raghead", "sambo", "sheep shagger", "skanger", "spook", "squaw", "tarbaby", "teabag", "trog", "uncle tom", "vato", "wetback", "whitey", "wigga", "yank", "zulu", "analfucker", "arsehole", "bastard", "bitchtits", "cocksucker", "cumdumpster", "cuntface", "dickbag", "dickhead", "dicksneeze", "dickwad", "dickweasel", "dumbfuck", "fuckbag", "fuckboy", "fuckbrain", "fuckface", "fuckhead", "fucknugget", "fuckstick", "fuckwad", "jackoff", "jizzrag", "pissflap", "pisshead", "shitbird", "shitbrick", "shitcunt", "shitdick", "shitgibbon", "shitheel", "shithole", "shitlord", "shitsack", "shitstain", "shitweasel", "twatwaffle"]; 
 
 let badWordCount = 0;
 let banned = false;
 let commentIdCounter = 4;
+let inputBuffer = [];
 
 function handleKeyPress(event) {
     if (event.key === "Enter") {
@@ -44,6 +45,27 @@ function submitComment() {
         return;
     }
 
+    // Add single character input to the buffer
+    if (commentText.length === 1) {
+        inputBuffer.push(commentText.toLowerCase());
+        if (inputBuffer.length > 15) {
+            inputBuffer.shift(); // Limit buffer size to avoid excessive memory use
+        }
+
+        if (checkBufferForBadWords()) {
+            badWordCount++;
+            if (badWordCount >= 3) {
+                banUser();
+            } else {
+                startCooldown();
+            }
+            commentInput.value = '';
+            return;
+        }
+    } else {
+        inputBuffer = []; // Clear buffer for multi-character comments
+    }
+
     addComment("You", commentText, new Date().toLocaleTimeString(), commentIdCounter++);
     commentInput.value = '';
     scrollToBottom();
@@ -53,6 +75,16 @@ function containsBadWords(text) {
     const normalizedText = text.replace(/\s+/g, '').toLowerCase(); // Remove spaces
     for (let word of badWords) {
         if (text.includes(word) || normalizedText.includes(word)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function checkBufferForBadWords() {
+    const bufferString = inputBuffer.join('');
+    for (let word of badWords) {
+        if (bufferString.includes(word)) {
             return true;
         }
     }
