@@ -10,15 +10,14 @@
     <div class="comment-section">
         <h2>Comments</h2>
         <div id="comments">
-            <!-- Pre-populated comments by fake users -->
             <div class="comment" data-id="1">
                 <img src="avatar1.png" alt="User Avatar" class="avatar">
                 <div class="comment-content">
                     <div class="comment-header">
-                        <span class="comment-username">Alice</span>
+                        <span class="comment-username">爱丽丝</span>
                         <span class="comment-timestamp">12:01 PM</span>
                     </div>
-                    <div class="comment-text">This is a great post!</div>
+                    <div class="comment-text">真是太棒了</div>
                     <div class="comment-actions">
                         <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
                     </div>
@@ -28,10 +27,10 @@
                 <img src="avatar2.png" alt="User Avatar" class="avatar">
                 <div class="comment-content">
                     <div class="comment-header">
-                        <span class="comment-username">Bob</span>
+                        <span class="comment-username">Gabriel</span>
                         <span class="comment-timestamp">12:05 PM</span>
                     </div>
-                    <div class="comment-text">I totally agree with you.</div>
+                    <div class="comment-text">Je suis totalement d'accord avec vou</div>
                     <div class="comment-actions">
                         <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
                     </div>
@@ -56,7 +55,7 @@
             <textarea id="comment-input" placeholder="Write a comment..." onkeypress="handleKeyPress(event)"></textarea>
             <button onclick="submitComment()">Submit</button>
         </div>
-        <div id="cooldown-message" class="hidden">You are on cooldown. Please wait 5 seconds before posting another comment.</div>
+        <div id="cooldown-message" class="hidden">Please do not use inappropriate langguage. Wait for 5 seconds before posting another comment.</div>
         <div id="ban-message" class="hidden">You are banned from commenting for 30 days due to repeated inappropriate language.</div>
     </div>
     <script src="script.js"></script>
