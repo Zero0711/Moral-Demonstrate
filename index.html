@@ -61,16 +61,23 @@
         <div id="cooldown-message" class="hidden">Please do not use inappropriate language. Wait for 5 seconds before posting another comment.</div>
         <div id="ban-message" class="hidden">You are banned from commenting for 30 days due to repeated inappropriate language.</div>
     </div>
-    <div class="community-guidelines">
-        <h2>Community Guidelines</h2>
-        <p>Please follow our community guidelines to ensure a respectful and positive environment:</p>
-        <ul>
-            <li>Be respectful to others.</li>
-            <li>No offensive language or behavior.</li>
-            <li>Report any inappropriate content.</li>
-            <li>Follow the rules and regulations of the platform.</li>
-        </ul>
+
+    <!-- Community Guidelines Modal -->
+    <div id="guidelines-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2>Community Guidelines</h2>
+            <p>Please follow our community guidelines to ensure a respectful and positive environment:</p>
+            <ul>
+                <li>Be respectful to others.</li>
+                <li>No offensive language or behavior.</li>
+                <li>Report any inappropriate content.</li>
+                <li>Follow the rules and regulations of the platform.</li>
+            </ul>
+            <button onclick="acknowledgeGuidelines()">I Understand</button>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
