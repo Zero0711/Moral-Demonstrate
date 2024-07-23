@@ -4,7 +4,7 @@ body {
     color: #333;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     height: 100vh;
     margin: 0;
     padding: 20px;
@@ -96,7 +96,7 @@ body {
     color: #999;
 }
 
-.like-button, .edit-button {
+.like-button, .edit-button, .report-button {
     background: none;
     border: none;
     color: #007bff;
@@ -166,9 +166,41 @@ body {
     margin-top: 10px;
 }
 
+/* Community Guidelines */
+.community-guidelines {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: 20px;
+    box-sizing: border-box;
+}
+
+.community-guidelines h2 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 24px;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.community-guidelines ul {
+    list-style: none;
+    padding: 0;
+}
+
+.community-guidelines ul li {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
-    .comment-section {
+    .comment-section, .community-guidelines {
         width: 100%;
         padding: 10px;
     }
