@@ -23,6 +23,7 @@ let commentIdCounter = 4;
 let recentComments = [];
 let reportedComments = [];
 let lastCommentTime = 0;
+let guidelinesAcknowledged = false;
 
 function normalizeText(text) {
     return text.toLowerCase()
@@ -43,6 +44,11 @@ function handleKeyPress(event) {
 }
 
 function submitComment() {
+    if (!guidelinesAcknowledged) {
+        showModal();
+        return;
+    }
+
     const now = Date.now();
     if (now - lastCommentTime < 5000) { // 5-second cooldown
         alert('You are commenting too quickly. Please wait a moment.');
@@ -222,3 +228,20 @@ function scrollToBottom() {
     const commentsDiv = document.getElementById('comments');
     commentsDiv.scrollTop = commentsDiv.scrollHeight;
 }
+
+// Modal functions
+function showModal() {
+    document.getElementById('guidelines-modal').style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById('guidelines-modal').style.display = "none";
+}
+
+function acknowledgeGuidelines() {
+    guidelinesAcknowledged = true;
+    closeModal();
+}
+
+// Show the modal when the page loads
+window.onload = showModal;
