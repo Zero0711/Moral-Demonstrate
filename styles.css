@@ -8,10 +8,11 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
 }
 
 .comment-section {
-    background: linear-gradient(135deg, #f3e7e9 0%, #e3eeff 100%);
+    background: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -20,6 +21,7 @@ body {
     margin: 20px auto;
     box-sizing: border-box;
     transition: all 0.3s ease-in-out;
+    background: linear-gradient(to right, #a1c4fd, #c2e9fb);
 }
 
 .comment-section:hover {
@@ -157,7 +159,7 @@ body {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #ff7e5f;
     color: white;
     cursor: pointer;
     font-size: 14px;
@@ -166,7 +168,7 @@ body {
 }
 
 .comment-form button:hover {
-    background-color: #0056b3;
+    background-color: #ff3b3b;
     transform: translateY(-2px);
 }
 
@@ -243,6 +245,7 @@ body {
     margin: 20px auto;
     box-sizing: border-box;
     transition: all 0.3s ease-in-out;
+    background: linear-gradient(to right, #fbc2eb, #a6c1ee);
 }
 
 .community-guidelines:hover {
@@ -275,7 +278,7 @@ body {
 footer {
     text-align: center;
     padding: 10px;
-    background: linear-gradient(135deg, #f3e7e9 0%, #e3eeff 100%);
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
     color: #333;
     font-size: 14px;
     width: 100%;
