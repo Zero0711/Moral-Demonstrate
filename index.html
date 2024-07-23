@@ -20,6 +20,7 @@
                     <div class="comment-text">真是太棒了</div>
                     <div class="comment-actions">
                         <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
+                        <button class="report-button" onclick="reportComment(this)">Report</button>
                     </div>
                 </div>
             </div>
@@ -33,6 +34,7 @@
                     <div class="comment-text">Je suis totalement d'accord avec vou</div>
                     <div class="comment-actions">
                         <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
+                        <button class="report-button" onclick="reportComment(this)">Report</button>
                     </div>
                 </div>
             </div>
@@ -46,6 +48,7 @@
                     <div class="comment-text">Very informative, thanks for sharing!</div>
                     <div class="comment-actions">
                         <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
+                        <button class="report-button" onclick="reportComment(this)">Report</button>
                     </div>
                 </div>
             </div>
@@ -55,8 +58,18 @@
             <textarea id="comment-input" placeholder="Write a comment..." onkeypress="handleKeyPress(event)"></textarea>
             <button onclick="submitComment()">Submit</button>
         </div>
-        <div id="cooldown-message" class="hidden">Please do not use inappropriate langguage. Wait for 5 seconds before posting another comment.</div>
+        <div id="cooldown-message" class="hidden">Please do not use inappropriate language. Wait for 5 seconds before posting another comment.</div>
         <div id="ban-message" class="hidden">You are banned from commenting for 30 days due to repeated inappropriate language.</div>
+    </div>
+    <div class="community-guidelines">
+        <h2>Community Guidelines</h2>
+        <p>Please follow our community guidelines to ensure a respectful and positive environment:</p>
+        <ul>
+            <li>Be respectful to others.</li>
+            <li>No offensive language or behavior.</li>
+            <li>Report any inappropriate content.</li>
+            <li>Follow the rules and regulations of the platform.</li>
+        </ul>
     </div>
     <script src="script.js"></script>
 </body>
