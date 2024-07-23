@@ -68,6 +68,12 @@ function submitComment() {
         return;
     }
 
+    if (commentText === "/help") {
+        showHelpModal();
+        commentInput.value = '';
+        return;
+    }
+
     const cooldownMessage = document.getElementById('cooldown-message');
 
     if (!cooldownMessage.classList.contains('hidden')) {
@@ -241,6 +247,15 @@ function closeModal() {
 function acknowledgeGuidelines() {
     guidelinesAcknowledged = true;
     closeModal();
+}
+
+// Help modal functions
+function showHelpModal() {
+    document.getElementById('help-modal').style.display = "block";
+}
+
+function closeHelpModal() {
+    document.getElementById('help-modal').style.display = "none";
 }
 
 // Show the modal when the page loads
