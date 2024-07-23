@@ -50,7 +50,7 @@ function submitComment() {
     }
 
     const now = Date.now();
-    if (now - lastCommentTime < 3000) { 
+    if (now - lastCommentTime < 2000) { // 2-second cooldown
         alert('You are commenting too quickly. Please wait a moment.');
         return;
     }
@@ -161,7 +161,7 @@ function startCooldown() {
 
     setTimeout(() => {
         cooldownMessage.classList.add('hidden');
-    }, 5000);
+    }, 2000);
 }
 
 function banUser() {
