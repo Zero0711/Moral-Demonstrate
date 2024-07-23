@@ -20,7 +20,6 @@ const badWords = ["bastard", "bugger", "shit", "fuck", "cibai", "shitface", "bas
 let badWordCount = 0;
 let banned = false;
 let commentIdCounter = 4;
-let inputBuffer = "";
 let recentComments = [];
 let reportedComments = [];
 let lastCommentTime = 0;
@@ -39,11 +38,7 @@ function normalizeText(text) {
 function handleKeyPress(event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        if (event.target.classList.contains('edit-input')) {
-            saveEditedComment(event.target);
-        } else {
-            submitComment();
-        }
+        submitComment();
     }
 }
 
@@ -62,37 +57,32 @@ function submitComment() {
 
     const commentInput = document.getElementById('comment-input');
     let commentText = commentInput.value.trim();
-    const cooldownMessage = document.getElementById('cooldown-message');
 
-    if (!cooldownMessage.classList.contains('hidden') || commentText === '') {
+    if (commentText.length < 2) { // Allow very short comments
         return;
     }
 
-    if (commentText.length > 0) {
-        commentText = commentText.charAt(0).toUpperCase() + commentText.slice(1);
+    const cooldownMessage = document.getElementById('cooldown-message');
+
+    if (!cooldownMessage.classList.contains('hidden')) {
+        return;
     }
 
     const normalizedText = normalizeText(commentText);
-    inputBuffer += normalizedText;
-    if (inputBuffer.length > 100) {
-        inputBuffer = inputBuffer.slice(-100);
-    }
 
     recentComments.push(normalizedText);
     if (recentComments.length > 10) {
         recentComments.shift();
     }
 
-    if (containsBadWords(inputBuffer) || checkRecentComments() || analyzeSentiment(commentText) < 0) {
+    if (containsBadWords(normalizedText) || checkRecentComments()) {
         badWordCount++;
         if (badWordCount >= 3) {
             banUser();
         } else {
             startCooldown();
         }
-        inputBuffer = "";
         commentInput.value = '';
-        removeComments();
         return;
     }
 
@@ -102,31 +92,12 @@ function submitComment() {
 }
 
 function containsBadWords(text) {
-    for (let word of badWords) {
-        const regex = new RegExp(word.split('').join('[^a-z0-9]*'), 'i');
-        if (regex.test(text)) {
-            return true;
-        }
-    }
-    return false;
+    return badWords.some(word => text.includes(word));
 }
 
 function checkRecentComments() {
     const combinedText = recentComments.join('');
     return containsBadWords(combinedText);
-}
-
-function analyzeSentiment(text) {
-    // Placeholder function for sentiment analysis
-    // Implement a real sentiment analysis algorithm or API integration here
-    const negativeWords = ['hate', 'stupid', 'idiot'];
-    let score = 0;
-    text.split(' ').forEach(word => {
-        if (negativeWords.includes(word.toLowerCase())) {
-            score -= 1;
-        }
-    });
-    return score;
 }
 
 function removeComments() {
