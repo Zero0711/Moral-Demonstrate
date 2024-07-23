@@ -248,8 +248,8 @@ function submitReply(button) {
     }
 
     const commentDiv = button.closest('.comment');
-    const commentId = commentDiv.getAttribute('data-id');
-    addReply("You", replyText, new Date().toLocaleTimeString(), commentIdCounter++, commentDiv.querySelector('.replies'));
+    const repliesDiv = commentDiv.querySelector('.replies');
+    addReply("You", replyText, new Date().toLocaleTimeString(), commentIdCounter++, repliesDiv);
     replyInput.value = '';
     replyForm.classList.add('hidden');
 }
@@ -281,7 +281,6 @@ function scrollToBottom() {
     commentsDiv.scrollTop = commentsDiv.scrollHeight;
 }
 
-// Modal functions
 function showModal() {
     document.getElementById('guidelines-modal').style.display = "block";
 }
@@ -295,7 +294,6 @@ function acknowledgeGuidelines() {
     closeModal();
 }
 
-// Help modal functions
 function showHelpModal() {
     document.getElementById('help-modal').style.display = "block";
 }
@@ -304,5 +302,4 @@ function closeHelpModal() {
     document.getElementById('help-modal').style.display = "none";
 }
 
-// Show the modal when the page loads
 window.onload = showModal;
