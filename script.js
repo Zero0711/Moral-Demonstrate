@@ -39,7 +39,11 @@ function normalizeText(text) {
 function handleKeyPress(event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        submitComment();
+        if (event.target.classList.contains('reply-input')) {
+            submitReply(event.target.nextElementSibling);
+        } else {
+            submitComment();
+        }
     }
 }
 
@@ -137,9 +141,10 @@ function addComment(username, text, timestamp, id) {
                 <button class="report-button" onclick="reportComment(this)">Report</button>
             </div>
             <div class="reply-form hidden">
-                <textarea class="reply-input" placeholder="Write a reply..."></textarea>
+                <textarea class="reply-input" placeholder="Write a reply..." onkeypress="handleKeyPress(event)"></textarea>
                 <button onclick="submitReply(this)">Submit</button>
             </div>
+            <div class="replies"></div>
         </div>
     `;
     commentsDiv.appendChild(newComment);
@@ -244,9 +249,31 @@ function submitReply(button) {
 
     const commentDiv = button.closest('.comment');
     const commentId = commentDiv.getAttribute('data-id');
-    addComment("You (reply to " + commentId + ")", replyText, new Date().toLocaleTimeString(), commentIdCounter++);
+    addReply("You", replyText, new Date().toLocaleTimeString(), commentIdCounter++, commentDiv.querySelector('.replies'));
     replyInput.value = '';
     replyForm.classList.add('hidden');
+}
+
+function addReply(username, text, timestamp, id, repliesDiv) {
+    const newReply = document.createElement('div');
+    newReply.classList.add('comment');
+    newReply.setAttribute('data-id', id);
+    newReply.innerHTML = `
+        <img src="avatar.png" alt="User Avatar" class="avatar">
+        <div class="comment-content">
+            <div class="comment-header">
+                <span class="comment-username">${username}</span>
+                <span class="comment-timestamp">${timestamp}</span>
+            </div>
+            <div class="comment-text">${text}</div>
+            <div class="comment-actions">
+                <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
+                ${username === "You" ? '<button class="edit-button" onclick="editComment(this)">Edit</button>' : ''}
+                <button class="report-button" onclick="reportComment(this)">Report</button>
+            </div>
+        </div>
+    `;
+    repliesDiv.appendChild(newReply);
 }
 
 function scrollToBottom() {
