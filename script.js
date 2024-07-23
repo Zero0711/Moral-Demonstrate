@@ -27,7 +27,7 @@ let guidelinesAcknowledged = false;
 
 function normalizeText(text) {
     return text.toLowerCase()
-               .replace(/[^a-z0-9]/g, '') // Remove special characters
+               .replace(/[^a-z0-9\s]/g, '') // Remove special characters but keep spaces
                .replace(/4/g, 'a')
                .replace(/@/g, 'a')
                .replace(/3/g, 'e')
@@ -50,11 +50,6 @@ function submitComment() {
     }
 
     const now = Date.now();
-    if (now - lastCommentTime < 2000) { // 2-second cooldown
-        alert('You are commenting too quickly. Please wait a moment.');
-        return;
-    }
-    lastCommentTime = now;
 
     if (banned) {
         document.getElementById('ban-message').classList.remove('hidden');
@@ -74,20 +69,15 @@ function submitComment() {
         return;
     }
 
-    const cooldownMessage = document.getElementById('cooldown-message');
+    const normalizedText = normalizeText(commentText);
 
-    if (!cooldownMessage.classList.contains('hidden')) {
+    recentComments.push(now);
+    if (recentComments.length > 3 && now - recentComments[recentComments.length - 3] < 10000) {
+        startCooldown();
         return;
     }
 
-    const normalizedText = normalizeText(commentText);
-
-    recentComments.push(normalizedText);
-    if (recentComments.length > 10) {
-        recentComments.shift();
-    }
-
-    if (containsBadWords(normalizedText) || checkRecentComments()) {
+    if (containsBadWords(normalizedText)) {
         badWordCount++;
         if (badWordCount >= 3) {
             banUser();
@@ -105,11 +95,6 @@ function submitComment() {
 
 function containsBadWords(text) {
     return badWords.some(word => text.includes(word));
-}
-
-function checkRecentComments() {
-    const combinedText = recentComments.join('');
-    return containsBadWords(combinedText);
 }
 
 function removeComments() {
@@ -148,7 +133,12 @@ function addComment(username, text, timestamp, id) {
             <div class="comment-actions">
                 <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
                 ${username === "You" ? '<button class="edit-button" onclick="editComment(this)">Edit</button>' : ''}
+                <button class="reply-button" onclick="showReplyForm(this)">Reply</button>
                 <button class="report-button" onclick="reportComment(this)">Report</button>
+            </div>
+            <div class="reply-form hidden">
+                <textarea class="reply-input" placeholder="Write a reply..."></textarea>
+                <button onclick="submitReply(this)">Submit</button>
             </div>
         </div>
     `;
@@ -161,7 +151,7 @@ function startCooldown() {
 
     setTimeout(() => {
         cooldownMessage.classList.add('hidden');
-    }, 2000);
+    }, 5000);
 }
 
 function banUser() {
@@ -228,6 +218,35 @@ function saveEditedComment(editInput) {
     const editButton = commentDiv.querySelector('.edit-button');
     editButton.textContent = 'Edit';
     editButton.onclick = () => editComment(editButton);
+}
+
+function showReplyForm(button) {
+    const commentDiv = button.closest('.comment');
+    const replyForm = commentDiv.querySelector('.reply-form');
+    replyForm.classList.toggle('hidden');
+}
+
+function submitReply(button) {
+    const replyForm = button.closest('.reply-form');
+    const replyInput = replyForm.querySelector('.reply-input');
+    const replyText = replyInput.value.trim();
+
+    if (replyText === '') {
+        return;
+    }
+
+    const normalizedText = normalizeText(replyText);
+    if (containsBadWords(normalizedText)) {
+        alert('Your reply contains inappropriate language and will not be posted.');
+        replyInput.value = '';
+        return;
+    }
+
+    const commentDiv = button.closest('.comment');
+    const commentId = commentDiv.getAttribute('data-id');
+    addComment("You (reply to " + commentId + ")", replyText, new Date().toLocaleTimeString(), commentIdCounter++);
+    replyInput.value = '';
+    replyForm.classList.add('hidden');
 }
 
 function scrollToBottom() {
