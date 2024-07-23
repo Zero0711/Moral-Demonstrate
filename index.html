@@ -28,7 +28,7 @@
                             <button class="report-button" onclick="reportComment(this)">Report</button>
                         </div>
                         <div class="reply-form hidden">
-                            <textarea class="reply-input" placeholder="Write a reply..."></textarea>
+                            <textarea class="reply-input" placeholder="Write a reply..." onkeypress="handleKeyPress(event)"></textarea>
                             <button onclick="submitReply(this)">Submit</button>
                         </div>
                         <div class="replies"></div>
@@ -48,7 +48,7 @@
                             <button class="report-button" onclick="reportComment(this)">Report</button>
                         </div>
                         <div class="reply-form hidden">
-                            <textarea class="reply-input" placeholder="Write a reply..."></textarea>
+                            <textarea class="reply-input" placeholder="Write a reply..." onkeypress="handleKeyPress(event)"></textarea>
                             <button onclick="submitReply(this)">Submit</button>
                         </div>
                         <div class="replies"></div>
@@ -68,7 +68,7 @@
                             <button class="report-button" onclick="reportComment(this)">Report</button>
                         </div>
                         <div class="reply-form hidden">
-                            <textarea class="reply-input" placeholder="Write a reply..."></textarea>
+                            <textarea class="reply-input" placeholder="Write a reply..." onkeypress="handleKeyPress(event)"></textarea>
                             <button onclick="submitReply(this)">Submit</button>
                         </div>
                         <div class="replies"></div>
@@ -84,7 +84,6 @@
             <div id="ban-message" class="hidden">You are banned from commenting for 30 days due to repeated inappropriate language.</div>
         </div>
 
-        <!-- Community Guidelines Modal -->
         <div id="guidelines-modal" class="modal">
             <div class="modal-content">
                 <span class="close-button" onclick="closeModal()">&times;</span>
@@ -100,7 +99,6 @@
             </div>
         </div>
 
-        <!-- Help Message Modal -->
         <div id="help-modal" class="modal">
             <div class="modal-content">
                 <span class="close-button" onclick="closeHelpModal()">&times;</span>
