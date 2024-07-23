@@ -1,4 +1,4 @@
-const badWords = ["bastard", "bugger", "shit", "fuck", "cibai", "shitface", "bastardson", "punde", "benchod", "motherfucker", 
+const badWords = ["bastard", "bugger", "shit", "fuck", "cibai", "shitface", "bastardson", "punde", "benchod", "motherfucker", "f@ck", "sh!t", "a$$", "b!tch", "m0therfucker", 
     "pussy", "fuckface", "fuck", "shit", "bitch", "asshole", "dick", "piss", "crap", "damn", "cunt", "prick", "fag", 
     "faggot", "slut", "whore", "nigger", "nigga", "cock", "twat", "wanker", "dyke", "bullshit", "douche", "dumbass", 
     "jackass", "jerkoff", "shithead", "tits", "tit", "balls", "bollocks", "chink", "coon", "gook", "heeb", "homo", 
@@ -22,6 +22,18 @@ let banned = false;
 let commentIdCounter = 4;
 let inputBuffer = "";
 
+// Function to normalize text
+function normalizeText(text) {
+    return text.toLowerCase()
+               .replace(/[^a-z0-9]/g, '') // Remove special characters
+               .replace(/4/g, 'a')
+               .replace(/@/g, 'a')
+               .replace(/3/g, 'e')
+               .replace(/1/g, 'i')
+               .replace(/0/g, 'o')
+               .replace(/\$/g, 's');
+}
+
 function handleKeyPress(event) {
     if (event.key === "Enter") {
         event.preventDefault();
@@ -43,7 +55,7 @@ function submitComment() {
     let commentText = commentInput.value.trim();
     const cooldownMessage = document.getElementById('cooldown-message');
 
-    if (cooldownMessage.classList.contains('hidden') === false || commentText === '') {
+    if (!cooldownMessage.classList.contains('hidden') || commentText === '') {
         return;
     }
 
@@ -51,20 +63,20 @@ function submitComment() {
         commentText = commentText.charAt(0).toUpperCase() + commentText.slice(1);
     }
 
-    // Add input to the buffer
-    inputBuffer += commentText.toLowerCase().replace(/\s+/g, '');
-    if (inputBuffer.length > 100) { // Limit buffer size
+    const normalizedText = normalizeText(commentText);
+    inputBuffer += normalizedText;
+    if (inputBuffer.length > 100) {
         inputBuffer = inputBuffer.slice(-100);
     }
 
-    if (containsBadWords(inputBuffer)) {
+    if (containsBadWords(normalizedText)) {
         badWordCount++;
         if (badWordCount >= 3) {
             banUser();
         } else {
             startCooldown();
         }
-        inputBuffer = ""; // Clear the buffer
+        inputBuffer = "";
         commentInput.value = '';
         removeComments();
         return;
@@ -77,7 +89,7 @@ function submitComment() {
 
 function containsBadWords(text) {
     for (let word of badWords) {
-        const regex = new RegExp(word.split('').join('[^a-zA-Z0-9]*'), 'i');
+        const regex = new RegExp(word.split('').join('[^a-z0-9]*'), 'i');
         if (regex.test(text)) {
             return true;
         }
@@ -91,7 +103,7 @@ function removeComments() {
     const commentIdsToRemove = [];
 
     for (let comment of comments) {
-        const commentText = comment.querySelector('.comment-text').textContent.toLowerCase().replace(/\s+/g, '');
+        const commentText = normalizeText(comment.querySelector('.comment-text').textContent);
         if (containsBadWords(commentText)) {
             commentIdsToRemove.push(comment.getAttribute('data-id'));
         }
@@ -133,7 +145,7 @@ function startCooldown() {
 
     setTimeout(() => {
         cooldownMessage.classList.add('hidden');
-    }, 5000); // Cooldown period of 5 seconds
+    }, 5000);
 }
 
 function banUser() {
@@ -154,13 +166,13 @@ function editComment(button) {
     const commentDiv = button.closest('.comment');
     const commentTextDiv = commentDiv.querySelector('.comment-text');
     const originalText = commentTextDiv.textContent;
-    
+
     const editInput = document.createElement('textarea');
     editInput.className = 'edit-input';
     editInput.value = originalText;
     editInput.onkeypress = handleKeyPress;
     commentTextDiv.replaceWith(editInput);
-    
+
     button.textContent = 'Save';
     button.onclick = () => saveEditedComment(editInput);
 }
@@ -173,7 +185,8 @@ function saveEditedComment(editInput) {
         return;
     }
 
-    if (containsBadWords(newText.toLowerCase().replace(/\s+/g, ''))) {
+    const normalizedText = normalizeText(newText);
+    if (containsBadWords(normalizedText)) {
         startCooldown();
         commentDiv.remove();
         return;
