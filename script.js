@@ -21,8 +21,8 @@ let badWordCount = 0;
 let banned = false;
 let commentIdCounter = 4;
 let inputBuffer = "";
+let recentComments = [];
 
-// Function to normalize text
 function normalizeText(text) {
     return text.toLowerCase()
                .replace(/[^a-z0-9]/g, '') // Remove special characters
@@ -69,7 +69,12 @@ function submitComment() {
         inputBuffer = inputBuffer.slice(-100);
     }
 
-    if (containsBadWords(normalizedText)) {
+    recentComments.push(normalizedText);
+    if (recentComments.length > 10) {
+        recentComments.shift();
+    }
+
+    if (containsBadWords(inputBuffer) || checkRecentComments()) {
         badWordCount++;
         if (badWordCount >= 3) {
             banUser();
@@ -95,6 +100,11 @@ function containsBadWords(text) {
         }
     }
     return false;
+}
+
+function checkRecentComments() {
+    const combinedText = recentComments.join('');
+    return containsBadWords(combinedText);
 }
 
 function removeComments() {
