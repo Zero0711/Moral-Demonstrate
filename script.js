@@ -22,6 +22,8 @@ let banned = false;
 let commentIdCounter = 4;
 let inputBuffer = "";
 let recentComments = [];
+let reportedComments = [];
+let lastCommentTime = 0;
 
 function normalizeText(text) {
     return text.toLowerCase()
@@ -46,6 +48,13 @@ function handleKeyPress(event) {
 }
 
 function submitComment() {
+    const now = Date.now();
+    if (now - lastCommentTime < 5000) { // 5-second cooldown
+        alert('You are commenting too quickly. Please wait a moment.');
+        return;
+    }
+    lastCommentTime = now;
+
     if (banned) {
         document.getElementById('ban-message').classList.remove('hidden');
         return;
@@ -74,7 +83,7 @@ function submitComment() {
         recentComments.shift();
     }
 
-    if (containsBadWords(inputBuffer) || checkRecentComments()) {
+    if (containsBadWords(inputBuffer) || checkRecentComments() || analyzeSentiment(commentText) < 0) {
         badWordCount++;
         if (badWordCount >= 3) {
             banUser();
@@ -105,6 +114,19 @@ function containsBadWords(text) {
 function checkRecentComments() {
     const combinedText = recentComments.join('');
     return containsBadWords(combinedText);
+}
+
+function analyzeSentiment(text) {
+    // Placeholder function for sentiment analysis
+    // Implement a real sentiment analysis algorithm or API integration here
+    const negativeWords = ['hate', 'stupid', 'idiot'];
+    let score = 0;
+    text.split(' ').forEach(word => {
+        if (negativeWords.includes(word.toLowerCase())) {
+            score -= 1;
+        }
+    });
+    return score;
 }
 
 function removeComments() {
@@ -143,6 +165,7 @@ function addComment(username, text, timestamp, id) {
             <div class="comment-actions">
                 <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
                 ${username === "You" ? '<button class="edit-button" onclick="editComment(this)">Edit</button>' : ''}
+                <button class="report-button" onclick="reportComment(this)">Report</button>
             </div>
         </div>
     `;
@@ -170,6 +193,18 @@ function likeComment(button) {
     let likeCount = parseInt(likeCountSpan.textContent);
     likeCount++;
     likeCountSpan.textContent = likeCount;
+}
+
+function reportComment(button) {
+    const commentDiv = button.closest('.comment');
+    const commentId = commentDiv.getAttribute('data-id');
+    if (!reportedComments.includes(commentId)) {
+        reportedComments.push(commentId);
+        commentDiv.classList.add('reported');
+        alert('Comment reported. Thank you for your feedback.');
+    } else {
+        alert('This comment has already been reported.');
+    }
 }
 
 function editComment(button) {
