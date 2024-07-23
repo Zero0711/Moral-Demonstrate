@@ -50,7 +50,7 @@ function submitComment() {
     }
 
     const now = Date.now();
-    if (now - lastCommentTime < 5000) { // 5-second cooldown
+    if (now - lastCommentTime < 3000) { 
         alert('You are commenting too quickly. Please wait a moment.');
         return;
     }
