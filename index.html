@@ -7,96 +7,57 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="comment-section">
-        <h2>Comments</h2>
-        <div id="comments">
-            <div class="comment" data-id="1">
-                <img src="avatar1.png" alt="User Avatar" class="avatar">
-                <div class="comment-content">
-                    <div class="comment-header">
-                        <span class="comment-username">爱丽丝</span>
-                        <span class="comment-timestamp">12:01 PM</span>
-                    </div>
-                    <div class="comment-text">真是太棒了</div>
-                    <div class="comment-actions">
-                        <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
-                        <button class="report-button" onclick="reportComment(this)">Report</button>
-                    </div>
-                </div>
+    <header>
+        <h1>Anti-Cyberbullying System</h1>
+    </header>
+    <main>
+        <div class="comment-section">
+            <h2>Comments</h2>
+            <div id="comments">
+                <!-- Existing comments -->
             </div>
-            <div class="comment" data-id="2">
-                <img src="avatar2.png" alt="User Avatar" class="avatar">
-                <div class="comment-content">
-                    <div class="comment-header">
-                        <span class="comment-username">Gabriel</span>
-                        <span class="comment-timestamp">12:05 PM</span>
-                    </div>
-                    <div class="comment-text">Je suis totalement d'accord avec vou</div>
-                    <div class="comment-actions">
-                        <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
-                        <button class="report-button" onclick="reportComment(this)">Report</button>
-                    </div>
-                </div>
+            <div class="comment-form">
+                <img src="avatar.png" alt="User Avatar" class="avatar">
+                <textarea id="comment-input" placeholder="Write a comment..." onkeypress="handleKeyPress(event)"></textarea>
+                <button onclick="submitComment()">Submit</button>
             </div>
-            <div class="comment" data-id="3">
-                <img src="avatar3.png" alt="User Avatar" class="avatar">
-                <div class="comment-content">
-                    <div class="comment-header">
-                        <span class="comment-username">Charlie</span>
-                        <span class="comment-timestamp">12:10 PM</span>
-                    </div>
-                    <div class="comment-text">Very informative, thanks for sharing!</div>
-                    <div class="comment-actions">
-                        <button class="like-button" onclick="likeComment(this)">Like <span class="like-count">0</span></button>
-                        <button class="report-button" onclick="reportComment(this)">Report</button>
-                    </div>
-                </div>
+            <div id="cooldown-message" class="hidden">Please do not use inappropriate language. Wait for 5 seconds before posting another comment.</div>
+            <div id="ban-message" class="hidden">You are banned from commenting for 30 days due to repeated inappropriate language.</div>
+        </div>
+
+        <!-- Community Guidelines Modal -->
+        <div id="guidelines-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal()">&times;</span>
+                <h2>Community Guidelines</h2>
+                <p>Please follow our community guidelines to ensure a respectful and positive environment:</p>
+                <ul>
+                    <li>Be respectful to others.</li>
+                    <li>No offensive language or behavior.</li>
+                    <li>Report any inappropriate content.</li>
+                    <li>Follow the rules and regulations of the platform.</li>
+                </ul>
+                <button onclick="acknowledgeGuidelines()">I Understand</button>
             </div>
         </div>
-        <div class="comment-form">
-            <img src="avatar.png" alt="User Avatar" class="avatar">
-            <textarea id="comment-input" placeholder="Write a comment..." onkeypress="handleKeyPress(event)"></textarea>
-            <button onclick="submitComment()">Submit</button>
-        </div>
-        <div id="cooldown-message" class="hidden">Please do not use inappropriate language. Wait for 5 seconds before posting another comment.</div>
-        <div id="ban-message" class="hidden">You are banned from commenting for 30 days due to repeated inappropriate language.</div>
-    </div>
 
-    <!-- Community Guidelines Modal -->
-    <div id="guidelines-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
-            <h2>Community Guidelines</h2>
-            <p>Please follow our community guidelines to ensure a respectful and positive environment:</p>
-            <ul>
-                <li>Be respectful to others.</li>
-                <li>No offensive language or behavior.</li>
-                <li>Report any inappropriate content.</li>
-                <li>Follow the rules and regulations of the platform.</li>
-            </ul>
-            <button onclick="acknowledgeGuidelines()">I Understand</button>
+        <!-- Help Message Modal -->
+        <div id="help-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeHelpModal()">&times;</span>
+                <h2>Help and Support</h2>
+                <p>If you are feeling overwhelmed or need support, please consider the following resources:</p>
+                <ul>
+                    <li><a href="https://www.suicidepreventionlifeline.org" target="_blank">Suicide Prevention Lifeline</a></li>
+                    <li><a href="https://www.crisistextline.org" target="_blank">Crisis Text Line</a></li>
+                    <li><a href="https://www.mentalhealth.gov/get-help/immediate-help" target="_blank">Mental Health Resources</a></li>
+                </ul>
+                <p>Remember, you are not alone. Reach out to friends, family, or professionals who can help.</p>
+            </div>
         </div>
-    </div>
-
-    <!-- Help Message Modal -->
-    <div id="help-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeHelpModal()">&times;</span>
-            <h2>Help and Support</h2>
-            <p>If you are feeling overwhelmed or need support, please consider the following resources:</p>
-            <ul>
-                <li><a href="https://www.suicidepreventionlifeline.org" target="_blank">Suicide Prevention Lifeline</a></li>
-                <li><a href="https://www.crisistextline.org" target="_blank">Crisis Text Line</a></li>
-                <li><a href="https://www.mentalhealth.gov/get-help/immediate-help" target="_blank">Mental Health Resources</a></li>
-            </ul>
-            <p>Remember, you are not alone. Reach out to friends, family, or professionals who can help.</p>
-        </div>
-    </div>
-
-    <!-- Footer with Credits -->
+    </main>
     <footer>
-        <p>Made by Chong<br>
-        Credits to JCAkun for helping debug and giving some ideas</p>
+        <p>Made by Chong<br>Credits to JCAkun for helping debug and giving some ideas</p>
     </footer>
 
     <script src="script.js"></script>
