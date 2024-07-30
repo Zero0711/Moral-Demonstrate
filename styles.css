@@ -5,15 +5,15 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background: #121212;
-    color: #e0e0e0;
+    background: #f5f5f5;
+    color: #333;
 }
 
 header {
-    background: #1f1f1f;
+    background: #87cefa;
     padding: 20px;
     text-align: center;
-    color: #e0e0e0;
+    color: #333;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -33,7 +33,7 @@ main {
 }
 
 .comment-section {
-    background: #1e1e1e;
+    background: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -52,8 +52,8 @@ main {
     margin-top: 0;
     text-align: center;
     font-size: 26px;
-    color: #ff6b6b;
-    border-bottom: 2px solid #ff6b6b;
+    color: #87cefa;
+    border-bottom: 2px solid #87cefa;
     padding-bottom: 10px;
     font-family: 'Trebuchet MS', sans-serif;
 }
@@ -63,21 +63,21 @@ main {
     height: 300px;
     overflow-y: auto;
     border-radius: 5px;
-    background: #2e2e2e;
+    background: #f9f9f9;
 }
 
 .comment {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #ccc;
     padding: 10px 0;
     margin-bottom: 10px;
     transition: background-color 0.3s ease;
 }
 
 .comment:hover {
-    background-color: #3e3e3e;
+    background-color: #e9f5fb;
 }
 
 .comment:last-child {
@@ -89,12 +89,12 @@ main {
     width: 40px;
     height: 40px;
     margin-right: 10px;
-    border: 2px solid #ff6b6b;
+    border: 2px solid #87cefa;
 }
 
 .comment-content {
     flex: 1;
-    background: #2e2e2e;
+    background: #f0f0f0;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
@@ -113,11 +113,11 @@ main {
 .comment-username {
     font-weight: bold;
     margin-right: 10px;
-    color: #ff6b6b;
+    color: #333;
 }
 
 .comment-timestamp {
-    color: #bbb;
+    color: #888;
     font-size: 12px;
 }
 
@@ -138,7 +138,7 @@ main {
 .like-button, .edit-button, .report-button, .reply-button {
     background: none;
     border: none;
-    color: #ff6b6b;
+    color: #87cefa;
     cursor: pointer;
     font-size: 14px;
     margin-right: 10px;
@@ -146,14 +146,14 @@ main {
 }
 
 .like-button:hover, .edit-button:hover, .report-button:hover, .reply-button:hover {
-    color: #ff3b3b;
+    color: #66c2eb;
 }
 
 .reply-form, .comment-form {
     display: flex;
     align-items: center;
     margin-top: 20px;
-    border-top: 1px solid #444;
+    border-top: 1px solid #ccc;
     padding-top: 10px;
 }
 
@@ -162,9 +162,9 @@ main {
     height: 50px;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #555;
-    background: #1e1e1e;
-    color: #e0e0e0;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    color: #333;
     font-size: 14px;
     resize: none;
     flex: 1;
@@ -173,15 +173,15 @@ main {
 }
 
 #comment-input:focus, .reply-input:focus {
-    border-color: #ff6b6b;
-    box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+    border-color: #87cefa;
+    box-shadow: 0 0 5px rgba(135, 206, 250, 0.5);
 }
 
 .comment-form button, .reply-form button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #ff6b6b;
+    background-color: #87cefa;
     color: white;
     cursor: pointer;
     font-size: 14px;
@@ -190,7 +190,7 @@ main {
 }
 
 .comment-form button:hover, .reply-form button:hover {
-    background-color: #ff3b3b;
+    background-color: #66c2eb;
     transform: translateY(-2px);
 }
 
@@ -199,7 +199,7 @@ main {
 }
 
 #cooldown-message, #ban-message {
-    color: #ff6b6b;
+    color: #87cefa;
     font-weight: bold;
     text-align: center;
     margin-top: 10px;
@@ -209,7 +209,7 @@ main {
 .replies {
     margin-left: 40px;
     padding-left: 10px;
-    border-left: 1px solid #444;
+    border-left: 1px solid #ccc;
 }
 
 .modal {
@@ -225,7 +225,7 @@ main {
 }
 
 .modal-content {
-    background-color: #2e2e2e;
+    background-color: #f0f0f0;
     margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -233,11 +233,11 @@ main {
     max-width: 600px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    color: #e0e0e0;
+    color: #333;
 }
 
 .close-button {
-    color: #aaa;
+    color: #888;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -245,13 +245,13 @@ main {
 
 .close-button:hover,
 .close-button:focus {
-    color: white;
+    color: #333;
     text-decoration: none;
     cursor: pointer;
 }
 
 .community-guidelines {
-    background: #2e2e2e;
+    background: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -270,8 +270,8 @@ main {
     margin-top: 0;
     text-align: center;
     font-size: 26px;
-    color: #ff6b6b;
-    border-bottom: 2px solid #ff6b6b;
+    color: #87cefa;
+    border-bottom: 2px solid #87cefa;
     padding-bottom: 10px;
     font-family: 'Trebuchet MS', sans-serif;
 }
@@ -284,15 +284,15 @@ main {
 .community-guidelines ul li {
     margin: 10px 0;
     font-size: 16px;
-    color: #ccc;
+    color: #333;
     font-family: 'Verdana', sans-serif;
 }
 
 footer {
     text-align: center;
     padding: 10px;
-    background: #1f1f1f;
-    color: #e0e0e0;
+    background: #87cefa;
+    color: #333;
     font-size: 14px;
     width: 100%;
     box-sizing: border-box;
@@ -354,6 +354,6 @@ footer {
     .replies {
         margin-left: 20px;
         padding-left: 5px;
-        border-left: 1px solid #444;
+        border-left: 1px solid #ccc;
     }
 }
