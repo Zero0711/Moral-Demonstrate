@@ -25,28 +25,13 @@ let reportedComments = [];
 let lastCommentTime = 0;
 let guidelinesAcknowledged = false;
 
-// Function to handle detection of comments spelling out bad words
+// Function to normalize and check for bad words
 function containsBadWords(text) {
-    // Normalize the text for comparison
     const normalizedText = text.toLowerCase().replace(/[^a-z0-9\s]/g, '');
-    let constructedBadWord = '';
-
-    // Check if multiple comments together spell out a bad word
-    recentComments.forEach(comment => {
-        constructedBadWord += comment.text.toLowerCase().replace(/[^a-z0-9]/g, '');
-    });
-
-    // Check if the constructed word contains any bad words
-    for (const word of badWords) {
-        if (constructedBadWord.includes(word)) {
-            return true;
-        }
-    }
-
-    // Check if the current comment alone contains a bad word
     return badWords.some(word => normalizedText.includes(word));
 }
 
+// Handle key press events
 function handleKeyPress(event) {
     if (event.key === "Enter") {
         event.preventDefault();
@@ -58,13 +43,12 @@ function handleKeyPress(event) {
     }
 }
 
+// Submit a new comment
 function submitComment() {
     if (!guidelinesAcknowledged) {
         showModal();
         return;
     }
-
-    const now = Date.now();
 
     if (banned) {
         document.getElementById('ban-message').classList.remove('hidden');
@@ -84,6 +68,7 @@ function submitComment() {
         return;
     }
 
+    const now = Date.now();
     recentComments.push({ time: now, text: commentText });
     if (recentComments.length > 3 && now - recentComments[recentComments.length - 3].time < 10000) {
         startCooldown();
@@ -106,26 +91,30 @@ function submitComment() {
     scrollToBottom();
 }
 
-function removeComments() {
-    const commentsDiv = document.getElementById('comments');
-    const comments = commentsDiv.getElementsByClassName('comment');
-    const commentIdsToRemove = [];
+// Submit a reply to a comment
+function submitReply(button) {
+    const replyForm = button.closest('.reply-form');
+    const replyInput = replyForm.querySelector('.reply-input');
+    const replyText = replyInput.value.trim();
 
-    for (let comment of comments) {
-        const commentText = normalizeText(comment.querySelector('.comment-text').textContent);
-        if (containsBadWords(commentText)) {
-            commentIdsToRemove.push(comment.getAttribute('data-id'));
-        }
+    if (replyText === '') {
+        return;
     }
 
-    for (let id of commentIdsToRemove) {
-        const commentToRemove = commentsDiv.querySelector(`.comment[data-id="${id}"]`);
-        if (commentToRemove) {
-            commentToRemove.remove();
-        }
+    if (containsBadWords(replyText)) {
+        alert('Your reply contains inappropriate language and will not be posted.');
+        replyInput.value = '';
+        return;
     }
+
+    const commentDiv = button.closest('.comment');
+    const repliesDiv = commentDiv.querySelector('.replies');
+    addReply("You", replyText, new Date().toLocaleTimeString(), commentIdCounter++, repliesDiv);
+    replyInput.value = '';
+    replyForm.classList.add('hidden');
 }
 
+// Add a comment to the DOM
 function addComment(username, text, timestamp, id) {
     const commentsDiv = document.getElementById('comments');
     const newComment = document.createElement('div');
@@ -155,110 +144,7 @@ function addComment(username, text, timestamp, id) {
     commentsDiv.appendChild(newComment);
 }
 
-function startCooldown() {
-    const cooldownMessage = document.getElementById('cooldown-message');
-    cooldownMessage.classList.remove('hidden');
-
-    setTimeout(() => {
-        cooldownMessage.classList.add('hidden');
-    }, 5000);
-}
-
-function banUser() {
-    banned = true;
-    document.getElementById('comment-input').disabled = true;
-    document.querySelector('.comment-form button').disabled = true;
-    document.getElementById('ban-message').classList.remove('hidden');
-}
-
-function likeComment(button) {
-    const likeCountSpan = button.querySelector('.like-count');
-    let likeCount = parseInt(likeCountSpan.textContent);
-    likeCount++;
-    likeCountSpan.textContent = likeCount;
-}
-
-function reportComment(button) {
-    const commentDiv = button.closest('.comment');
-    const commentId = commentDiv.getAttribute('data-id');
-    if (!reportedComments.includes(commentId)) {
-        reportedComments.push(commentId);
-        commentDiv.classList.add('reported');
-        alert('Comment reported. Thank you for your feedback.');
-    } else {
-        alert('This comment has already been reported.');
-    }
-}
-
-function editComment(button) {
-    const commentDiv = button.closest('.comment');
-    const commentTextDiv = commentDiv.querySelector('.comment-text');
-    const originalText = commentTextDiv.textContent;
-
-    const editInput = document.createElement('textarea');
-    editInput.className = 'edit-input';
-    editInput.value = originalText;
-    editInput.onkeypress = handleKeyPress;
-    commentTextDiv.replaceWith(editInput);
-
-    button.textContent = 'Save';
-    button.onclick = () => saveEditedComment(editInput);
-}
-
-function saveEditedComment(editInput) {
-    const newText = editInput.value.trim();
-    const commentDiv = editInput.closest('.comment');
-
-    if (newText === '') {
-        return;
-    }
-
-    const normalizedText = normalizeText(newText);
-    if (containsBadWords(normalizedText)) {
-        startCooldown();
-        commentDiv.remove();
-        return;
-    }
-
-    const commentTextDiv = document.createElement('div');
-    commentTextDiv.className = 'comment-text';
-    commentTextDiv.textContent = newText.charAt(0).toUpperCase() + newText.slice(1);
-    editInput.replaceWith(commentTextDiv);
-
-    const editButton = commentDiv.querySelector('.edit-button');
-    editButton.textContent = 'Edit';
-    editButton.onclick = () => editComment(editButton);
-}
-
-function showReplyForm(button) {
-    const commentDiv = button.closest('.comment');
-    const replyForm = commentDiv.querySelector('.reply-form');
-    replyForm.classList.toggle('hidden');
-}
-
-function submitReply(button) {
-    const replyForm = button.closest('.reply-form');
-    const replyInput = replyForm.querySelector('.reply-input');
-    const replyText = replyInput.value.trim();
-
-    if (replyText === '') {
-        return;
-    }
-
-    const normalizedText = normalizeText(replyText);
-    if (containsBadWords(normalizedText)) {
-        alert('Your reply contains inappropriate language and will not be posted.');
-        replyInput.value = '';
-        return;
-    }
-
-    const commentDiv = button.closest('.comment');
-    const repliesDiv = commentDiv.querySelector('.replies');
-    addReply("You", replyText, new Date().toLocaleTimeString(), commentIdCounter++, repliesDiv);
-    replyInput.value = '';
-    replyForm.classList.add('hidden');
-}
-
+// Add a reply to a comment
 function addReply(username, text, timestamp, id, repliesDiv) {
     const newReply = document.createElement('div');
     newReply.classList.add('comment');
@@ -281,30 +167,55 @@ function addReply(username, text, timestamp, id, repliesDiv) {
     repliesDiv.appendChild(newReply);
 }
 
-function scrollToBottom() {
-    const commentsDiv = document.getElementById('comments');
-    commentsDiv.scrollTop = commentsDiv.scrollHeight;
+// Start a cooldown period after detecting inappropriate behavior
+function startCooldown() {
+    const cooldownMessage = document.getElementById('cooldown-message');
+    cooldownMessage.classList.remove('hidden');
+    setTimeout(() => {
+        cooldownMessage.classList.add('hidden');
+    }, 5000);
 }
 
+// Ban a user from commenting
+function banUser() {
+    banned = true;
+    document.getElementById('comment-input').disabled = true;
+    document.querySelector('.comment-form button').disabled = true;
+    document.getElementById('ban-message').classList.remove('hidden');
+}
+
+// Show and hide reply form
+function showReplyForm(button) {
+    const commentDiv = button.closest('.comment');
+    const replyForm = commentDiv.querySelector('.reply-form');
+    replyForm.classList.toggle('hidden');
+}
+
+// Show modal for guidelines
 function showModal() {
     document.getElementById('guidelines-modal').style.display = "block";
 }
 
+// Close guidelines modal
 function closeModal() {
     document.getElementById('guidelines-modal').style.display = "none";
 }
 
+// Acknowledge guidelines
 function acknowledgeGuidelines() {
     guidelinesAcknowledged = true;
     closeModal();
 }
 
+// Show help modal
 function showHelpModal() {
     document.getElementById('help-modal').style.display = "block";
 }
 
+// Close help modal
 function closeHelpModal() {
     document.getElementById('help-modal').style.display = "none";
 }
 
+// Initial call to show the guidelines modal
 window.onload = showModal;
