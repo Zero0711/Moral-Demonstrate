@@ -25,15 +25,26 @@ let reportedComments = [];
 let lastCommentTime = 0;
 let guidelinesAcknowledged = false;
 
-function normalizeText(text) {
-    return text.toLowerCase()
-               .replace(/[^a-z0-9\s]/g, '') // Remove special characters but keep spaces
-               .replace(/4/g, 'a')
-               .replace(/@/g, 'a')
-               .replace(/3/g, 'e')
-               .replace(/1/g, 'i')
-               .replace(/0/g, 'o')
-               .replace(/\$/g, 's');
+// Function to handle detection of comments spelling out bad words
+function containsBadWords(text) {
+    // Normalize the text for comparison
+    const normalizedText = text.toLowerCase().replace(/[^a-z0-9\s]/g, '');
+    let constructedBadWord = '';
+
+    // Check if multiple comments together spell out a bad word
+    recentComments.forEach(comment => {
+        constructedBadWord += comment.text.toLowerCase().replace(/[^a-z0-9]/g, '');
+    });
+
+    // Check if the constructed word contains any bad words
+    for (const word of badWords) {
+        if (constructedBadWord.includes(word)) {
+            return true;
+        }
+    }
+
+    // Check if the current comment alone contains a bad word
+    return badWords.some(word => normalizedText.includes(word));
 }
 
 function handleKeyPress(event) {
@@ -63,7 +74,7 @@ function submitComment() {
     const commentInput = document.getElementById('comment-input');
     let commentText = commentInput.value.trim();
 
-    if (commentText.length < 2) { // Allow very short comments
+    if (commentText.length < 1) { // Allow very short comments
         return;
     }
 
@@ -73,15 +84,13 @@ function submitComment() {
         return;
     }
 
-    const normalizedText = normalizeText(commentText);
-
-    recentComments.push(now);
-    if (recentComments.length > 3 && now - recentComments[recentComments.length - 3] < 10000) {
+    recentComments.push({ time: now, text: commentText });
+    if (recentComments.length > 3 && now - recentComments[recentComments.length - 3].time < 10000) {
         startCooldown();
         return;
     }
 
-    if (containsBadWords(normalizedText)) {
+    if (containsBadWords(commentText)) {
         badWordCount++;
         if (badWordCount >= 3) {
             banUser();
@@ -95,10 +104,6 @@ function submitComment() {
     addComment("You", commentText, new Date().toLocaleTimeString(), commentIdCounter++);
     commentInput.value = '';
     scrollToBottom();
-}
-
-function containsBadWords(text) {
-    return badWords.some(word => text.includes(word));
 }
 
 function removeComments() {
