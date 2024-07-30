@@ -31,7 +31,7 @@ function containsBadWords(text) {
     return badWords.some(word => normalizedText.includes(word));
 }
 
-// Handle key press events
+// Handle key press events, specifically Enter key
 function handleKeyPress(event) {
     if (event.key === "Enter") {
         event.preventDefault();
@@ -43,7 +43,7 @@ function handleKeyPress(event) {
     }
 }
 
-// Submit a new comment
+// Function to submit a new comment
 function submitComment() {
     if (!guidelinesAcknowledged) {
         showModal();
@@ -58,7 +58,7 @@ function submitComment() {
     const commentInput = document.getElementById('comment-input');
     let commentText = commentInput.value.trim();
 
-    if (commentText.length < 1) { // Allow very short comments
+    if (commentText.length < 1) {
         return;
     }
 
@@ -91,7 +91,7 @@ function submitComment() {
     scrollToBottom();
 }
 
-// Submit a reply to a comment
+// Function to submit a reply to an existing comment
 function submitReply(button) {
     const replyForm = button.closest('.reply-form');
     const replyInput = replyForm.querySelector('.reply-input');
@@ -114,7 +114,7 @@ function submitReply(button) {
     replyForm.classList.add('hidden');
 }
 
-// Add a comment to the DOM
+// Function to add a new comment to the DOM
 function addComment(username, text, timestamp, id) {
     const commentsDiv = document.getElementById('comments');
     const newComment = document.createElement('div');
@@ -144,7 +144,7 @@ function addComment(username, text, timestamp, id) {
     commentsDiv.appendChild(newComment);
 }
 
-// Add a reply to a comment
+// Function to add a reply to a specific comment
 function addReply(username, text, timestamp, id, repliesDiv) {
     const newReply = document.createElement('div');
     newReply.classList.add('comment');
@@ -167,7 +167,7 @@ function addReply(username, text, timestamp, id, repliesDiv) {
     repliesDiv.appendChild(newReply);
 }
 
-// Start a cooldown period after detecting inappropriate behavior
+// Function to start a cooldown period after detecting inappropriate behavior
 function startCooldown() {
     const cooldownMessage = document.getElementById('cooldown-message');
     cooldownMessage.classList.remove('hidden');
@@ -176,7 +176,7 @@ function startCooldown() {
     }, 5000);
 }
 
-// Ban a user from commenting
+// Function to ban a user from commenting
 function banUser() {
     banned = true;
     document.getElementById('comment-input').disabled = true;
@@ -184,37 +184,105 @@ function banUser() {
     document.getElementById('ban-message').classList.remove('hidden');
 }
 
-// Show and hide reply form
+// Function to show and hide reply form
 function showReplyForm(button) {
     const commentDiv = button.closest('.comment');
     const replyForm = commentDiv.querySelector('.reply-form');
     replyForm.classList.toggle('hidden');
 }
 
-// Show modal for guidelines
+// Function to show modal for community guidelines
 function showModal() {
     document.getElementById('guidelines-modal').style.display = "block";
 }
 
-// Close guidelines modal
+// Function to close guidelines modal
 function closeModal() {
     document.getElementById('guidelines-modal').style.display = "none";
 }
 
-// Acknowledge guidelines
+// Function to acknowledge guidelines
 function acknowledgeGuidelines() {
     guidelinesAcknowledged = true;
     closeModal();
 }
 
-// Show help modal
+// Function to show help modal
 function showHelpModal() {
     document.getElementById('help-modal').style.display = "block";
 }
 
-// Close help modal
+// Function to close help modal
 function closeHelpModal() {
     document.getElementById('help-modal').style.display = "none";
+}
+
+// Function to like a comment
+function likeComment(button) {
+    const likeCountSpan = button.querySelector('.like-count');
+    let likeCount = parseInt(likeCountSpan.textContent);
+    likeCount++;
+    likeCountSpan.textContent = likeCount;
+}
+
+// Function to edit a comment
+function editComment(button) {
+    const commentDiv = button.closest('.comment');
+    const commentTextDiv = commentDiv.querySelector('.comment-text');
+    const originalText = commentTextDiv.textContent;
+
+    const editInput = document.createElement('textarea');
+    editInput.className = 'edit-input';
+    editInput.value = originalText;
+    editInput.onkeypress = handleKeyPress;
+    commentTextDiv.replaceWith(editInput);
+
+    button.textContent = 'Save';
+    button.onclick = () => saveEditedComment(editInput);
+}
+
+// Function to save an edited comment
+function saveEditedComment(editInput) {
+    const newText = editInput.value.trim();
+    const commentDiv = editInput.closest('.comment');
+
+    if (newText === '') {
+        return;
+    }
+
+    if (containsBadWords(newText)) {
+        startCooldown();
+        commentDiv.remove();
+        return;
+    }
+
+    const commentTextDiv = document.createElement('div');
+    commentTextDiv.className = 'comment-text';
+    commentTextDiv.textContent = newText.charAt(0).toUpperCase() + newText.slice(1);
+    editInput.replaceWith(commentTextDiv);
+
+    const editButton = commentDiv.querySelector('.edit-button');
+    editButton.textContent = 'Edit';
+    editButton.onclick = () => editComment(editButton);
+}
+
+// Function to report a comment
+function reportComment(button) {
+    const commentDiv = button.closest('.comment');
+    const commentId = commentDiv.getAttribute('data-id');
+    if (!reportedComments.includes(commentId)) {
+        reportedComments.push(commentId);
+        commentDiv.classList.add('reported');
+        alert('Comment reported. Thank you for your feedback.');
+    } else {
+        alert('This comment has already been reported.');
+    }
+}
+
+// Function to scroll to the bottom of the comments section
+function scrollToBottom() {
+    const commentsDiv = document.getElementById('comments');
+    commentsDiv.scrollTop = commentsDiv.scrollHeight;
 }
 
 // Initial call to show the guidelines modal
