@@ -1,3 +1,4 @@
+/* CSS Styles */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -199,7 +200,7 @@ main {
 }
 
 #cooldown-message, #ban-message {
-    color: #87cefa;
+    color: red; /* Set the alert text color to red */
     font-weight: bold;
     text-align: center;
     margin-top: 10px;
